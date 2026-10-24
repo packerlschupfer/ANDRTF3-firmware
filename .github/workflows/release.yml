@@ -1,0 +1,41 @@
+name: Release
+on:
+  push: { tags: ['v*'] }
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            ~/.cache/pip
+          key: pio-${{ runner.os }}-${{ hashFiles('firmware/platformio.ini', 'firmware/boards/*.json') }}
+      - run: pip install --upgrade platformio
+      - name: Check tag matches FW_VERSION
+        run: |
+          v=$(grep -oP 'define FW_VERSION\s+0x\K[0-9A-Fa-f]+' firmware/include/regs.h)
+          minor=$(( 0x$v & 0x0FFF ))
+          echo "tag ${GITHUB_REF_NAME}, FW_VERSION 0x$v"
+          test "${GITHUB_REF_NAME}" = "v0.${minor}" -o "${GITHUB_REF_NAME#v0.${minor}.}" != "${GITHUB_REF_NAME}"
+      - run: pio run
+        working-directory: firmware
+      - name: Collect assets
+        run: |
+          mkdir dist
+          B=firmware/.pio/build
+          cp $B/boot/firmware.bin   dist/andrtf3-bootloader-${GITHUB_REF_NAME}.bin
+          cp $B/slot_a/andrtf3_slot_a.bin dist/andrtf3_slot_a.bin
+          cp $B/slot_b/andrtf3_slot_b.bin dist/andrtf3_slot_b.bin
+          for e in boot slot_a slot_b; do cp $B/$e/firmware.elf dist/andrtf3-$e-${GITHUB_REF_NAME}.elf; done
+          (cd dist && sha256sum * > sha256sums.txt)
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

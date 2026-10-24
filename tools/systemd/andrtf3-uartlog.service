@@ -1,0 +1,10 @@
+[Unit]
+Description=ANDRTF3 debug UART logger (PC12, 115200 8N1)
+
+[Service]
+ExecStart=/usr/bin/python3 -I @REPO@/tools/uartlog.py @UART_DEV@ 115200 @REPO@/logs/debug_%%Y%%m%%d.log 0
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

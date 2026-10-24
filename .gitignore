@@ -1,0 +1,16 @@
+# Original Andivi firmware and anything derived from it (copyright Andivi) - kept local only.
+# The verified backup stays in dumps/<date>/ (read-only); only the checksums are tracked.
+dumps/**/*.bin
+re/
+
+# Regenerable / build output
+ghidra/
+firmware/.pio/
+__pycache__/
+
+# Serial logs are bench data (large, growing) - kept local
+logs/
+
+# only the original firmware's checksums are tracked
+dumps/*/
+!dumps/20261024-030101/

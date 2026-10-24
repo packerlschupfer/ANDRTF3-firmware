@@ -1,0 +1,23 @@
+name: CI
+on:
+  push: { branches: ["**"] }
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run: { working-directory: firmware }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.x' }
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            ~/.cache/pip
+          key: pio-${{ runner.os }}-${{ hashFiles('firmware/platformio.ini', 'firmware/boards/*.json') }}
+      - run: pip install --upgrade platformio
+      - run: pio run
+      - run: ls -l .pio/build/*/*.bin

@@ -1,0 +1,25 @@
+{
+  "build": {
+    "cpu": "cortex-m0plus",
+    "extra_flags": "-DSTM32L0 -DSTM32L071xx",
+    "f_cpu": "16000000L",
+    "mcu": "stm32l071rbt6",
+    "product_line": "STM32L071xx"
+  },
+  "debug": {
+    "default_tools": ["stlink"],
+    "jlink_device": "STM32L071RB",
+    "openocd_target": "stm32l0",
+    "svd_path": "STM32L0x1.svd"
+  },
+  "frameworks": ["cmsis", "stm32cube"],
+  "name": "Andivi ANDRTF3/MD controller (STM32L071RBT6)",
+  "upload": {
+    "maximum_ram_size": 20480,
+    "maximum_size": 131072,
+    "protocol": "stlink",
+    "protocols": ["stlink", "jlink", "cmsis-dap"]
+  },
+  "url": "https://www.st.com/en/microcontrollers-microprocessors/stm32l071rb.html",
+  "vendor": "ST"
+}

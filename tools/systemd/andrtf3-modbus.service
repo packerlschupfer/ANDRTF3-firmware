@@ -1,0 +1,10 @@
+[Unit]
+Description=ANDRTF3 Modbus RTU health monitor
+
+[Service]
+ExecStart=/usr/bin/python3 -I @REPO@/tools/modbus_monitor.py @MODBUS_DEV@ @REPO@/logs/modbus_%%Y%%m%%d.log --addr @ADDR@
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
